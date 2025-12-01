@@ -17,3 +17,41 @@ The system uses multiple agents (planner, teacher, evaluator, root) plus a persi
 - Python 3.10+
 - A Google API key in environment variable `GOOGLE_API_KEY`
 - Python packages from `requirements.txt`:
+
+## Running with ADK (recommended)
+
+From the project folder, install dependencies and start the agent with ADK:
+
+`pip install -r requirements.txt`
+
+run in terminal mode  
+`adk run myAgent`
+
+or run the web interface  
+`adk web`
+
+Then open the URL shown by ADK in your browser for the web UI.
+
+## Running the standalone CLI
+
+There is also a simple CLI entry point in `agent.py`:
+
+`python agent.py`
+
+This starts an interactive loop in the terminal. You can type commands like:
+
+- `teach me python basics`
+- `quiz`
+- `memory`
+- `profile`
+- `weaknesses`
+- `session`
+- `exit`
+
+Make sure your `GOOGLE_API_KEY` is set before running:
+
+```bash
+export GOOGLE_API_KEY="your-key-here" # macOS / Linux
+set GOOGLE_API_KEY=your-key-here # Windows CMD
+$env:GOOGLE_API_KEY="your-key-here" # PowerShell
+```
