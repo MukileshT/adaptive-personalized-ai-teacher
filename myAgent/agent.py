@@ -628,7 +628,7 @@ PRACTICAL_EXAMPLES
 COMMON_MISCONCEPTIONS
 - Address typical student mistakes
 
-SUMMARY()
+SUMMARY(not necessary for each output, only summarize at end of big topic)
 - Recap with progression to next steps
 
 FORMATTING:
