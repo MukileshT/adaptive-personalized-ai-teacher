@@ -1,0 +1,5 @@
+# .gitignore
+student_memory/
+*.log
+.env
+__pycache__/
