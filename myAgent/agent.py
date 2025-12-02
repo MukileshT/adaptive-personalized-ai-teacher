@@ -409,7 +409,7 @@ class KnowledgeVerificationLoop:
         
         if match_ratio >= 0.6:
             confidence = min(0.9, match_ratio + 0.1)
-            return True, confidence, "✓ Correct understanding demonstrated"
+            return True, confidence, "Correct understanding demonstrated"
         elif match_ratio >= 0.3:
             confidence = 0.4
             return False, confidence, "Partially correct. Let me clarify..."
@@ -442,7 +442,7 @@ class KnowledgeVerificationLoop:
 
 
 class AdvancedSessionManager:
-    """Enhanced session with adaptive teaching, verification, and persistence"""
+    """Session with adaptive teaching, verification, and persistence"""
 
     def __init__(self, student_id: str = "default_student"):
         self.student_id = student_id
@@ -639,7 +639,14 @@ FORMATTING:
 LENGTH MODES:
 
 - SHORT OVERVIEW (first time on a topic):
-  [already added, keep as is]
+    - If the request mentions "SHORT", "FIRST-TIME OVERVIEW", or "INTRO ONLY":
+    - Keep the lesson brief:
+        - 1 short INTRODUCTION section,
+        - 3-4 KEY_CONCEPT bullet points,
+        - 1 SMALL PRACTICAL_EXAMPLE.
+    - Avoid deep theory on the first pass.
+    - For follow-up requests like "explain in more detail", then expand into a full lesson.
+    
 - DETAILED FOLLOW UP (when the student asks for more detail):
   - Expand the topic, but KEEP THE RESPONSE COMPACT:
     - Maximum: about 8-12 short paragraphs OR
@@ -696,7 +703,7 @@ VISUAL LIMITATION:
 
 GUIDELINES:
 - Adjust depth based on difficulty level
-- Alway s verify facts with Google Search
+- Always verify facts with Google Search
 - Prevent hallucinations by citing sources
 - Use clear, structured formatting
 - For visual learners: use headings, bullet lists, and text-based diagrams or tables.
@@ -783,13 +790,13 @@ root_agent = Agent(
     instruction="""You are the ROOT ORCHESTRATOR for Advanced Adaptive Learning.
 
 CAPABILITIES:
-✓ Parallel agent execution (planner + teacher simultaneously)
-✓ Persistent memory management (cross-session learning)
-✓ Adaptive difficulty adjustment (real-time pacing)
-✓ Knowledge verification (comprehension checking)
-✓ Weakness remediation (targeted re-teaching)
-✓ Progress visualization (learning analytics)
-✓ Structured error prevention (hallucination avoidance)
+-> Parallel agent execution (planner + teacher simultaneously)
+-> Persistent memory management (cross-session learning)
+-> Adaptive difficulty adjustment (real-time pacing)
+-> Knowledge verification (comprehension checking)
+-> Weakness remediation (targeted re-teaching)
+-> Progress visualization (learning analytics)
+-> Structured error prevention (hallucination avoidance)
 
 VISUAL LIMITATION:
 - You CANNOT create or send real images, diagrams, or screenshots.
@@ -810,8 +817,8 @@ FIRST-TIME LESSON RULES:
   - End with a question like:
     "Does this overview feel clear so far, or would you like a deeper explanation?"
 - Only after the student explicitly asks for more detail should you request a longer, more detailed lesson from teacher_agent.
-- Do NOT drop a long wall of text as the first response on a new topic.
--And when calling the teacher, give it that context in the request:
+- Do NOT provoid a long paragraph of text as the first response on a new topic.
+-And when calling the teacher, give it this context in the request:
     "Teach [topic] with a SHORT first-time overview. Keep it concise, high-level and beginner-friendly."
 
 WORKFLOW - LEARNING REQUEST:
@@ -841,7 +848,7 @@ Step 3: Call evaluator_agent with the following JSON object:
     "current_difficulty": [use student_profile.current_difficulty.value (1-5)],
     "weak_areas": [use the list of weak topics from memory, can be empty]
   }
-Step 4: The evaluator_agent will call generate_adaptive_quiz and then return a full plain-text quiz.
+Step 4: The evaluator_agent will call generate_adaptive_quiz and then return a json file with quiz.
 Step 5: Show that quiz directly to the user without reformatting.
 Step 6: Track performance in memory after the user answers.
 Step 7: Adjust difficulty for the next session.
@@ -865,13 +872,12 @@ FORMATTING RULES:
     - Do NOT put normal text inside ```
 
 WHEN USING evaluator_agent:
-    - Treat evaluator_agent as the sole authority on quiz questions and correctness.
+    - Treat evaluator_agent as the the only authority on quiz questions and correctness.
     - evaluator_agent will either:
     - return quiz data (list of questions, options, correct answers), or
     - return an evaluation of a student's answer.
     - Your job is ONLY to:
-    - Turn that data into well-formatted Markdown for the user, and
-    - Communicate evaluator_agent's feedback clearly.
+    - Turn that data into well-formatted Markdown for the user, and Communicate evaluator_agent's feedback clearly.
     - Never change the meaning of evaluator_agent's questions or answers.
     - Never add extra quiz questions that are not in its output.
 
@@ -905,23 +911,21 @@ Action: Retrieve from persistent memory
 Response: Show topics, scores, progress timeline
 
 ADAPTIVE TEACHING RULES:
-✓ Always use agents for specialized tasks
-✓ Pass full student context between agents
-✓ Store all results in persistent memory
-✓ Evaluate comprehension before advancing
-✓ Adjust difficulty based on performance
-✓ Prevent hallucinations with structured outputs
-✓ Provide learning analytics on demand
-✓ Support multiple learning styles
+-> Always use agents for specialized tasks
+-> Pass full student context between agents
+-> Store all results in persistent memory
+-> Evaluate comprehension before advancing
+-> Adjust difficulty based on performance
+-> Provide learning analytics on demand
+-> Support multiple learning styles
 
 Do not explain the topic yourself.
 Always call teacher_agent to generate lesson content.
-When teaching, your job is only to relay and format the lesson returned by teacher_agent, not to invent new explanations.
+When teaching, your job is only to relay and format the lesson returned by teacher_agent, do not to invent new explanations.
 
 MARKDOWN RULES:
 -> The teacher_agent already returns well structured Markdown.
--> When you show a lesson to the user, you must copy the teacher_agent content
-  verbatim, without rephrasing or reformatting.
+-> When you show a lesson to the user, you must copy the teacher_agent content Exactly, without rephrasing or reformatting.
 -> Do not add extra asterisks or backticks around its output.
 -> Do not summarize the lesson; render it as-is, as Markdown.
 
@@ -959,7 +963,7 @@ class AdvancedADKSystem:
             print("❗ERROR: GOOGLE_API_KEY not found. Please set environment variable.❗\n")
             return
 
-        print("✓ System ready! Advanced adaptive features enabled.\n")
+        print("-> System ready! Advanced adaptive features enabled.\n")
         print("="*75)
         print("COMMANDS:")
         print(" - 'teach me [topic]'     - Learn with adaptive depth & pacing")
@@ -979,7 +983,7 @@ class AdvancedADKSystem:
                     continue
 
                 if user_input.lower() == 'exit':
-                    print("\n✓ Session saved. Goodbye!\n")
+                    print("\n-> Session saved. Goodbye!\n")
                     break
 
                 if user_input.lower() == 'memory':
@@ -1006,7 +1010,7 @@ class AdvancedADKSystem:
                 print(f"\n{result}\n")
 
             except KeyboardInterrupt:
-                print("\n\n✓ Session interrupted. Your progress is saved.\n")
+                print("\n\n-> Session interrupted. Your progress is saved.\n")
                 break
             except Exception as e:
                 logger.error(f"Error: {e}")
@@ -1060,7 +1064,7 @@ class AdvancedADKSystem:
                 print(f"{i}. {weakness}")
                 print("   ↳ Recommended: Review lesson and attempt targeted quiz")
         else:
-            print("✓ No weak areas identified. You're doing great!")
+            print("-> No weak areas identified. You're doing great!")
         print("="*70 + "\n")
 
     def _show_session_summary(self):
